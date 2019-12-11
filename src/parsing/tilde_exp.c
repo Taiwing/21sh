@@ -6,14 +6,14 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 18:44:28 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/30 13:55:34 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:14:48 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ms_data.h"
+#include "sh_data.h"
 #include "t_shvar.h"
 
-void		tilde_exp(t_ms_data *msd, char **str)
+void		tilde_exp(t_sh_data *shd, char **str)
 {
 	char	*dir;
 	char	*slash;
@@ -21,7 +21,7 @@ void		tilde_exp(t_ms_data *msd, char **str)
 	if (!*str || **str != '~' || ((*str)[1] && (*str)[1] != '/'))
 		return ;
 	slash = (*str)[1] == '/' ? *str + 1 : NULL;
-	dir = get_shvar_val("HOME", msd->env);
+	dir = get_shvar_val("HOME", shd->env);
 	dir = ft_strdup(dir ? dir : "");
 	dir = slash ? ft_stradd(&dir, slash, ft_strlen(slash)) : dir;
 	if (!ft_strcmp(dir, ""))

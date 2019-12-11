@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msb_cd.c                                           :+:      :+:    :+:   */
+/*   shb_cd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/16 21:32:03 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 15:57:56 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:04:47 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ms_data.h"
+#include "sh_data.h"
 #include "t_shvar.h"
 #include <sys/syslimits.h>
 
-static int	change_dir(char **argv, t_ms_data *msd)
+static int	change_dir(char **argv, t_sh_data *shd)
 {
 	char	*dir;
 
-	if (!(dir = argv[1] ? argv[1] : get_shvar_val("HOME", msd->env)))
+	if (!(dir = argv[1] ? argv[1] : get_shvar_val("HOME", shd->env)))
 		ft_putstr_fd("cd: HOME is not set or has no value\n", 2);
 	else if (argv[1] && !ft_strcmp(dir, "-") &&
-		!(dir = get_shvar_val("OLDPWD", msd->env)))
+		!(dir = get_shvar_val("OLDPWD", shd->env)))
 		ft_putstr_fd("cd: OLDPWD is not set or has no value\n", 2);
 	else if (!chdir(dir))
 		return (0);
@@ -35,7 +35,7 @@ static int	change_dir(char **argv, t_ms_data *msd)
 	return (-1);
 }
 
-int			msb_cd(char **argv, t_ms_data *msd)
+int			shb_cd(char **argv, t_sh_data *shd)
 {
 	int		argc;
 	char	newdir[PATH_MAX];
@@ -45,19 +45,19 @@ int			msb_cd(char **argv, t_ms_data *msd)
 		ft_putstr_fd("cd: wrong number of argument\n", 2);
 		return (1);
 	}
-	else if (change_dir(argv, msd) == -1)
+	else if (change_dir(argv, shd) == -1)
 		return (1);
 	else if (!getcwd(newdir, PATH_MAX))
 	{
-		set_shvar("OLDPWD", get_shvar_val("PWD", msd->env), &msd->env, ENV_VAR);
-		set_shvar("PWD", NULL, &msd->env, ENV_VAR);
+		set_shvar("OLDPWD", get_shvar_val("PWD", shd->env), &shd->env, ENV_VAR);
+		set_shvar("PWD", NULL, &shd->env, ENV_VAR);
 		ft_putstr_fd("cd: could not get current working directory\n", 2);
 		return (1);
 	}
 	else
 	{
-		set_shvar("OLDPWD", get_shvar_val("PWD", msd->env), &msd->env, ENV_VAR);
-		set_shvar("PWD", newdir, &msd->env, ENV_VAR);
+		set_shvar("OLDPWD", get_shvar_val("PWD", shd->env), &shd->env, ENV_VAR);
+		set_shvar("PWD", newdir, &shd->env, ENV_VAR);
 	}
 	return (0);
 }

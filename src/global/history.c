@@ -6,14 +6,14 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/21 14:47:30 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/04 20:02:08 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:08:04 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
-#include "ms_data.h"
+#include "sh_data.h"
 
-void	load_history(t_ms_history *hist, char *path)
+void	load_history(t_sh_history *hist, char *path)
 {
 	int		fd;
 	ssize_t	cmd_len;
@@ -39,7 +39,7 @@ void	load_history(t_ms_history *hist, char *path)
 	ft_memdel((void **)&path);
 }
 
-void	add_to_history(char *input, t_ms_history *hist,
+void	add_to_history(char *input, t_sh_history *hist,
 						char *path, size_t *cmd_c)
 {
 	int	fd;
@@ -61,7 +61,7 @@ void	add_to_history(char *input, t_ms_history *hist,
 	hist->cmd[hist->size++] = ft_strdup(input);
 }
 
-void	del_history(t_ms_history *hist, size_t start, size_t len)
+void	del_history(t_sh_history *hist, size_t start, size_t len)
 {
 	char	*to_del[HISTMAX];
 
@@ -76,7 +76,7 @@ void	del_history(t_ms_history *hist, size_t start, size_t len)
 		ft_memdel((void **)&to_del[--len]);
 }
 
-void	write_history(int fd, t_ms_history *hist, size_t start, size_t len)
+void	write_history(int fd, t_sh_history *hist, size_t start, size_t len)
 {
 	size_t	i;
 	ssize_t	cmd_len;
@@ -93,11 +93,11 @@ void	write_history(int fd, t_ms_history *hist, size_t start, size_t len)
 	}
 }
 
-void	flush_history(t_ms_history *hist, size_t len, char *path)
+void	flush_history(t_sh_history *hist, size_t len, char *path)
 {
 	int				fd;
 	size_t			max;
-	t_ms_history	old;
+	t_sh_history	old;
 
 	fd = -1;
 	old.size = 0;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_parsing.c                                       :+:      :+:    :+:   */
+/*   sh_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 22:31:22 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 17:10:44 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:14:39 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ static void	rm_quotes(char **str)
 	ft_memdel((void **)&dup);
 }
 
-static int	expand(t_ms_data *msd, t_list *cmd_list)
+static int	expand(t_sh_data *shd, t_list *cmd_list)
 {
 	t_token	*tok;
 	int		argc;
 
-	(void)msd;
+	(void)shd;
 	argc = 0;
 	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == T_WORD)
 	{
-		tilde_exp(msd, &tok->str);
-		param_exp(msd, &tok->str);
+		tilde_exp(shd, &tok->str);
+		param_exp(shd, &tok->str);
 		rm_quotes(&tok->str);
 		cmd_list = cmd_list->next;
 		argc = tok->str ? argc + 1 : argc;
@@ -62,13 +62,13 @@ static int	expand(t_ms_data *msd, t_list *cmd_list)
 	return (argc);
 }
 
-char		**ms_parsing(t_ms_data *msd, t_list **cmd_list)
+char		**sh_parsing(t_sh_data *shd, t_list **cmd_list)
 {
 	t_token	*tok;
 	int		argc;
 	char	**argv;
 
-	argc = expand(msd, *cmd_list);
+	argc = expand(shd, *cmd_list);
 	argv = argc ? ft_secmalloc((argc + 1) * sizeof(char *)) : NULL;
 	argc = 0;
 	while (*cmd_list

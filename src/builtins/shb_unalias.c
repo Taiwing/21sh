@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msb_unalias.c                                      :+:      :+:    :+:   */
+/*   shb_unalias.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 11:25:05 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 15:58:38 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:06:26 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "t_shvar.h"
-#include "ms_data.h"
+#include "sh_data.h"
 
-static char	**unalias_opt(t_ms_data *msd, int argc, char **argv)
+static char	**unalias_opt(t_sh_data *shd, int argc, char **argv)
 {
 	t_optdata	od;
 	int			unset_all;
@@ -23,11 +23,11 @@ static char	**unalias_opt(t_ms_data *msd, int argc, char **argv)
 	while (ft_getopt(argc, argv, &od) != -1)
 		unset_all = 1;
 	if (unset_all)
-		ft_lstdel(&msd->alias, shvar_del);
+		ft_lstdel(&shd->alias, shvar_del);
 	return (argv + od.optind);
 }
 
-int			msb_unalias(char **argv, t_ms_data *msd)
+int			shb_unalias(char **argv, t_sh_data *shd)
 {
 	int			ret;
 	int			argc;
@@ -38,11 +38,11 @@ int			msb_unalias(char **argv, t_ms_data *msd)
 	else
 	{
 		ret = 0;
-		argv = unalias_opt(msd, argc, argv);
+		argv = unalias_opt(shd, argc, argv);
 		while (*argv)
 		{
-			if (get_shvar(*argv, msd->alias))
-				ft_lst_remove_if(&msd->alias, *argv, name_shvar_cmp);
+			if (get_shvar(*argv, shd->alias))
+				ft_lst_remove_if(&shd->alias, *argv, name_shvar_cmp);
 			else
 			{
 				ft_dprintf(2, "unalias: %s: not found\n", *argv);

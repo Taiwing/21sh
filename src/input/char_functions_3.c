@@ -6,26 +6,26 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 18:01:04 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/03 18:58:09 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:09:38 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "charfunc.h"
 
-int	move_end(t_input_data *idat, t_ms_data *msd)
+int	move_end(t_input_data *idat, t_sh_data *shd)
 {
 	if (idat->lst && (idat->lst->next || idat->bol))
 	{
 		ft_strcpy(idat->c, g_multibyte_chars[RIGHT_ARROW - 11]);
 		while (idat->lst->next || idat->bol)
-			move_right(idat, msd);
+			move_right(idat, shd);
 	}
 	return (CONTINUE_INPUT);
 }
 
-int	forwd_delete(t_input_data *idat, t_ms_data *msd)
+int	forwd_delete(t_input_data *idat, t_sh_data *shd)
 {
-	(void)msd;
+	(void)shd;
 	if (idat->lst && (idat->lst->next || idat->bol))
 	{
 		ft_putstr_fd(" \10", 0);
@@ -44,9 +44,9 @@ int	forwd_delete(t_input_data *idat, t_ms_data *msd)
 	return (CONTINUE_INPUT);
 }
 
-int	insert_char(t_input_data *idat, t_ms_data *msd)
+int	insert_char(t_input_data *idat, t_sh_data *shd)
 {
-	if (idat->cursor_pos[X] == msd->term_width)
+	if (idat->cursor_pos[X] == shd->term_width)
 	{
 		idat->cursor_pos[X] = 1;
 		++idat->cursor_pos[Y];
@@ -64,7 +64,7 @@ int	insert_char(t_input_data *idat, t_ms_data *msd)
 	return (CONTINUE_INPUT);
 }
 
-int	back_delete(t_input_data *idat, t_ms_data *msd)
+int	back_delete(t_input_data *idat, t_sh_data *shd)
 {
 	if (!idat->bol)
 	{
@@ -73,11 +73,11 @@ int	back_delete(t_input_data *idat, t_ms_data *msd)
 		if (idat->cursor_pos[X] == 1)
 		{
 			--idat->cursor_pos[Y];
-			idat->cursor_pos[X] = msd->term_width;
+			idat->cursor_pos[X] = shd->term_width;
 		}
 		else
 			--idat->cursor_pos[X];
-		if (!idat->lst->prev && idat->cursor_pos[X] != msd->term_width)
+		if (!idat->lst->prev && idat->cursor_pos[X] != shd->term_width)
 			ft_putstr_fd("\010 \010", 0);
 		else
 			write(0, "\010", 1);

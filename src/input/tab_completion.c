@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 13:38:12 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/02 23:56:43 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:11:04 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,15 @@ static void	insert_comp(char *comp, t_input_data *idat)
 }
 
 void		complete_input(int completion, char *part,
-				t_input_data *idat, t_ms_data *msd)
+				t_input_data *idat, t_sh_data *shd)
 {
 	char	*comp;
 
 	comp = NULL;
 	if (completion == ENV_COMP)
-		comp = env_completion(part, msd->env);
+		comp = env_completion(part, shd->env);
 	else if (completion == EXEC_COMP)
-		comp = exec_completion(part, msd->path);
+		comp = exec_completion(part, shd->path);
 	else if (completion == FILE_COMP)
 		comp = file_completion(part);
 	ft_memdel((void **)&part);

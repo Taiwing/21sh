@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_init.c                                          :+:      :+:    :+:   */
+/*   sh_init.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 10:30:45 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/03 22:25:03 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:18:55 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <termios.h>
-#include "ms_data.h"
+#include "sh_data.h"
 #include "t_shvar.h"
-#include "ms_signals.h"
+#include "sh_signals.h"
 #include "terminal_size.h"
 
 void		set_custom_input_mode(void)
@@ -44,45 +44,45 @@ void		reset_input_mode(void)
 		tcsetattr(0, TCSANOW, old_tattr);
 }
 
-static void	set_needed_env(t_ms_data *msd)
+static void	set_needed_env(t_sh_data *shd)
 {
 	char	name[1024];
 	char	*shlvl;
 
-	if (!get_shvar("HOST", msd->env) && !gethostname(name, 1024))
-		set_shvar("HOST", name, &msd->env, ENV_VAR);
-	if (!get_shvar("PWD", msd->env) && getcwd(name, 1024))
-		set_shvar("PWD", name, &msd->env, ENV_VAR);
-	if (!get_shvar("USER", msd->env))
-		set_shvar("USER", "john_doe", &msd->env, ENV_VAR);
-	if (!(shlvl = get_shvar_val("SHLVL", msd->env)))
-		set_shvar("SHLVL", "1", &msd->env, ENV_VAR);
+	if (!get_shvar("HOST", shd->env) && !gethostname(name, 1024))
+		set_shvar("HOST", name, &shd->env, ENV_VAR);
+	if (!get_shvar("PWD", shd->env) && getcwd(name, 1024))
+		set_shvar("PWD", name, &shd->env, ENV_VAR);
+	if (!get_shvar("USER", shd->env))
+		set_shvar("USER", "john_doe", &shd->env, ENV_VAR);
+	if (!(shlvl = get_shvar_val("SHLVL", shd->env)))
+		set_shvar("SHLVL", "1", &shd->env, ENV_VAR);
 	else
 	{
 		shlvl = ft_itoa(ft_atoi(shlvl) + 1);
-		set_shvar("SHLVL", shlvl, &msd->env, ENV_VAR);
+		set_shvar("SHLVL", shlvl, &shd->env, ENV_VAR);
 		ft_memdel((void **)&shlvl);
 	}
 }
 
-void		ms_init(t_ms_data *msd, char **env)
+void		sh_init(t_sh_data *shd, char **env)
 {
 	init_signals();
-	ft_exitmsg("minishell");
+	ft_exitmsg(SHELL_NAME);
 	ft_dir_container();
 	ft_atexit(ft_close_dir_stack);
 	if (!isatty(0))
 		ft_exit("not a terminal", EXIT_FAILURE);
 	reset_input_mode();
 	ft_atexit(reset_input_mode);
-	msd->alias = NULL;
-	msd->env = env_to_list(env);
-	set_needed_env(msd);
-	msd->path = ft_strsplit(get_shvar_val("PATH", msd->env), ':');
-	msd->cmd_exit = 0;
-	msd->process_id = 0;
-	load_history(&msd->hist, get_shvar_val("HOME", msd->env));
-	msd->cmd_c = 0;
-	msd->term_width = get_terminal_width();
-	term_width_container(&msd->term_width);
+	shd->alias = NULL;
+	shd->env = env_to_list(env);
+	set_needed_env(shd);
+	shd->path = ft_strsplit(get_shvar_val("PATH", shd->env), ':');
+	shd->cmd_exit = 0;
+	shd->process_id = 0;
+	load_history(&shd->hist, get_shvar_val("HOME", shd->env));
+	shd->cmd_c = 0;
+	shd->term_width = get_terminal_width();
+	term_width_container(&shd->term_width);
 }

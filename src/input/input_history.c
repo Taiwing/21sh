@@ -6,15 +6,15 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 07:54:37 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/03 19:30:33 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:10:27 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ms_input.h"
+#include "sh_input.h"
 #include "charfunc.h"
 #include "terminal_cursor.h"
 
-void		save_current_line(t_input_data *idat, t_ms_history *hist)
+void		save_current_line(t_input_data *idat, t_sh_history *hist)
 {
 	char	*raw;
 
@@ -28,18 +28,18 @@ void		save_current_line(t_input_data *idat, t_ms_history *hist)
 	}
 }
 
-static void	erase_current_line(t_input_data *idat, t_ms_data *msd)
+static void	erase_current_line(t_input_data *idat, t_sh_data *shd)
 {
 	if (!idat->lst)
 		return ;
-	move_end(idat, msd);
+	move_end(idat, shd);
 	while (!idat->bol)
-		back_delete(idat, msd);
+		back_delete(idat, shd);
 }
 
-void		restore(t_input_data *idat, t_ms_history *hist, t_ms_data *msd)
+void		restore(t_input_data *idat, t_sh_history *hist, t_sh_data *shd)
 {
-	erase_current_line(idat, msd);
+	erase_current_line(idat, shd);
 	if (!idat->hi && idat->buf)
 	{
 		idat->lst = dllst_last(str_to_dllst(idat->buf));

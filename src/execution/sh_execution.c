@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_execution.c                                     :+:      :+:    :+:   */
+/*   sh_execution.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 14:29:38 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 15:59:39 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:07:27 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "g_builtins.h"
-#include "ms_execution.h"
+#include "sh_execution.h"
 
 static int	builtin_match(char *name)
 {
@@ -27,7 +27,7 @@ static int	builtin_match(char *name)
 	return (-1);
 }
 
-void		ms_execution(t_ms_data *msd, char ***cmd, int free_cmd)
+void		sh_execution(t_sh_data *shd, char ***cmd, int free_cmd)
 {
 	char	**argv;
 	int		buid;
@@ -35,15 +35,15 @@ void		ms_execution(t_ms_data *msd, char ***cmd, int free_cmd)
 	argv = *cmd;
 	if (ft_strchr(argv[0], '/'))
 	{
-		msd->cmd_exit = 1;
-		exec_local_file(msd, argv);
+		shd->cmd_exit = 1;
+		exec_local_file(shd, argv);
 	}
 	else if ((buid = builtin_match(argv[0])) >= 0)
-		msd->cmd_exit = g_builtins[buid].bi(argv, msd);
+		shd->cmd_exit = g_builtins[buid].bi(argv, shd);
 	else
 	{
-		msd->cmd_exit = 1;
-		exec_on_path(msd, argv);
+		shd->cmd_exit = 1;
+		exec_on_path(shd, argv);
 	}
 	if (free_cmd == CMD_FREE)
 	{

@@ -6,12 +6,12 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/02 20:14:36 by yforeau           #+#    #+#             */
-/*   Updated: 2019/05/02 21:51:48 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:11:09 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "ms_input.h"
+#include "sh_input.h"
 
 int		*curs_pos_container(int *in)
 {

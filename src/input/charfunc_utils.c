@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/26 18:40:04 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 17:04:18 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:09:51 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ static int	get_word_qmode(int *word, int qmode, char *str)
 	return (qmode);
 }
 
-void		check_input(t_input_data *idat, t_ms_data *msd)
+void		check_input(t_input_data *idat, t_sh_data *shd)
 {
 	char	*recbuf;
 
 	if ((idat->qmode = get_word_qmode(&idat->word, idat->qmode, idat->buf))
 		!= NO_QUOTE)
 	{
-		if (!(recbuf = ms_input(msd, idat->qmode, idat->word)))
+		if (!(recbuf = sh_input(shd, idat->qmode, idat->word)))
 		{
 			ft_memdel((void **)&idat->buf);
 			dllst_del(dllst_first(idat->lst));

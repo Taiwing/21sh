@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:29:41 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 17:09:07 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:12:26 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ void	add_token(t_list **lst, int id, char *str)
 	ft_lst_push_back(lst, (void *)&tok, sizeof(t_token));
 }
 
-void	check_alias(t_ms_data *msd, t_list **toks, char *word)
+void	check_alias(t_sh_data *shd, t_list **toks, char *word)
 {
 	t_list	*lst;
 	char	*alias;
 
-	if ((alias = get_shvar_val(word, msd->alias)))
+	if ((alias = get_shvar_val(word, shd->alias)))
 	{
 		alias = ft_strjoin(alias, " ");
-		lst = tokenize(msd, alias, NO_QUOTE, ALIAS_OFF);
+		lst = tokenize(shd, alias, NO_QUOTE, ALIAS_OFF);
 		if (!*toks)
 			*toks = lst;
 		else
@@ -63,7 +63,7 @@ void	check_alias(t_ms_data *msd, t_list **toks, char *word)
 		add_token(toks, T_WORD, word);
 }
 
-t_list	*tokenize(t_ms_data *msd, char *input, int qmode, int alias)
+t_list	*tokenize(t_sh_data *shd, char *input, int qmode, int alias)
 {
 	int		i;
 	size_t	len;
@@ -81,7 +81,7 @@ t_list	*tokenize(t_ms_data *msd, char *input, int qmode, int alias)
 		{
 			if (alias == ALIAS_ON && (!lst
 				|| ((t_token *)ft_lst_last(lst)->content)->id == T_SEPARATOR))
-				check_alias(msd, &lst, ft_strsub(input + i - len, 0, len));
+				check_alias(shd, &lst, ft_strsub(input + i - len, 0, len));
 			else
 				add_token(&lst, T_WORD, ft_strsub(input + i - len, 0, len));
 			len = 0;

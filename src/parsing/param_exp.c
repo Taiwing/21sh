@@ -6,11 +6,11 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/11 18:45:56 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/12 12:23:42 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:14:25 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ms_data.h"
+#include "sh_data.h"
 #include "quotes.h"
 #include "t_shvar.h"
 
@@ -50,7 +50,7 @@ static void	insert_value_string(char **str, size_t st,
 	*str = res;
 }
 
-static char	*fetch_value_string(t_ms_data *msd, char **str,
+static char	*fetch_value_string(t_sh_data *shd, char **str,
 								char *start, int name_len)
 {
 	char	*name;
@@ -60,11 +60,11 @@ static char	*fetch_value_string(t_ms_data *msd, char **str,
 	st = start - *str;
 	if (ft_strchr("$?", start[1]))
 		value = start[1] == '$' ?
-		ft_itoa(msd->process_id) : ft_itoa(msd->cmd_exit);
+		ft_itoa(shd->process_id) : ft_itoa(shd->cmd_exit);
 	else
 	{
 		name = ft_strsub(start, 1, name_len);
-		value = get_shvar_val(name, msd->env);
+		value = get_shvar_val(name, shd->env);
 		value = value ? ft_strdup(value) : NULL;
 		ft_memdel((void **)&name);
 	}
@@ -74,7 +74,7 @@ static char	*fetch_value_string(t_ms_data *msd, char **str,
 	return (*str + st);
 }
 
-void		param_exp(t_ms_data *msd, char **str)
+void		param_exp(t_sh_data *shd, char **str)
 {
 	char	*ptr;
 	int		name_len;
@@ -90,7 +90,7 @@ void		param_exp(t_ms_data *msd, char **str)
 		name_len = 0;
 		if (*ptr == '$' && (qmode == NO_QUOTE || qmode == DQUOTE))
 			name_len = get_name(ptr + 1, qmode);
-		ptr = name_len ? fetch_value_string(msd, str, ptr, name_len) : ptr + 1;
+		ptr = name_len ? fetch_value_string(shd, str, ptr, name_len) : ptr + 1;
 	}
 	if (!**str)
 		ft_memdel((void **)str);

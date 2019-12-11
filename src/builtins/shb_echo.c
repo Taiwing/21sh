@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msb_echo.c                                         :+:      :+:    :+:   */
+/*   shb_echo.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 17:19:54 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/12 17:56:17 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:04:55 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ms_data.h"
+#include "sh_data.h"
 
-int	msb_echo(char **argv, t_ms_data *msd)
+int	shb_echo(char **argv, t_sh_data *shd)
 {
 	t_optdata	od;
 	int			i;
 	int			argc;
 	int			no_newline;
 
-	(void)msd;
+	(void)shd;
 	no_newline = 0;
 	argc = ft_wtlen(argv);
 	init_getopt(&od, "n", 0, 0);

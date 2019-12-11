@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msb_alias.c                                        :+:      :+:    :+:   */
+/*   shb_alias.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 11:25:01 by yforeau           #+#    #+#             */
-/*   Updated: 2019/04/29 14:25:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/11 21:04:27 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "t_shvar.h"
-#include "ms_data.h"
+#include "sh_data.h"
 #include "quotes.h"
 
 static char	*get_alias_name(char *str)
@@ -41,14 +41,14 @@ static void	print_alias_list(t_list *lst)
 	}
 }
 
-int			msb_alias(char **argv, t_ms_data *msd)
+int			shb_alias(char **argv, t_sh_data *shd)
 {
 	int		argc;
 	char	*name;
 	char	*value;
 
 	if ((argc = ft_wtlen(argv)) == 1)
-		print_alias_list(msd->alias);
+		print_alias_list(shd->alias);
 	else if (argc > 2)
 	{
 		ft_putstr_fd("alias: too many arguments\n", 2);
@@ -57,7 +57,7 @@ int			msb_alias(char **argv, t_ms_data *msd)
 	else if ((name = get_alias_name(argv[1])))
 	{
 		value = unquote_str(ft_strchr(argv[1], '=') + 1);
-		set_shvar(name, value, &msd->alias, ALIAS_VAR);
+		set_shvar(name, value, &shd->alias, ALIAS_VAR);
 		ft_memdel((void **)&name);
 		ft_memdel((void **)&value);
 	}
