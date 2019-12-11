@@ -1,0 +1,3 @@
+#!/bin/bash
+
+printf "YEAH from \"lol:exec\"/ !!!\n"
