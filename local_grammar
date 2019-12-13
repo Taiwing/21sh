@@ -55,9 +55,6 @@ cmd_suffix       :            io_redirect
                  |            WORD
                  | cmd_suffix WORD
                  ;
-redirect_list    :               io_redirect
-                 | redirect_list io_redirect
-                 ;
 io_redirect      :           io_file
                  | IO_NUMBER io_file
                  |           io_here
