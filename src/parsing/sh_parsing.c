@@ -5,87 +5,117 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/10 22:31:22 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/15 21:20:09 by yforeau          ###   ########.fr       */
+/*   Created: 2019/12/16 10:28:46 by yforeau           #+#    #+#             */
+/*   Updated: 2019/12/16 22:45:23 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
-#include "tilde_exp.h"
-#include "param_exp.h"
-#include "quotes.h"
+#include "sh_parsing.h"
+#include "debug.h"
 
-static void	rm_quotes(char **str)
+int			(* const g_p_functions[PRODS_COUNT])(enum e_tokenid t_id,
+			t_list **token, t_node *node) = {
+	p_complete_command,
+	p_list,
+	p_list_p,
+	p_and_or,
+	p_and_or_p,
+	p_pipeline,
+	p_pipeline_p,
+	p_command,
+	p_cmd_name,
+	p_cmd_word,
+	p_cmd_prefix,
+	p_cmd_suffix,
+	p_io_redirect,
+	p_io_file,
+	p_filename,
+	p_io_here,
+	p_here_end,
+	p_newline_list,
+	p_linebreak,
+	p_separator,
+	p_term
+};
+
+static void	add_node(t_node *src, t_node **parent)
 {
-	char	*dup;
-	char	*pdup;
-	char	*pstr;
-	int		qmode;
-	int		old_qmode;
+	t_node	**place;
+	t_node	*new_node;
 
-	if (!*str)
-		return ;
-	pstr = *str;
-	dup = NULL;
-	old_qmode = NO_QUOTE;
-	while (*pstr)
-	{
-		if ((qmode = get_qmode(old_qmode, *pstr)) != old_qmode && !dup)
-		{
-			dup = ft_strncat(ft_strnew(ft_strlen(*str)), *str, pstr - *str);
-			pdup = dup + (pstr - *str);
-		}
-		else if ((qmode == old_qmode || qmode == (old_qmode & ~BSQUOTE)) && dup)
-			*pdup++ = *pstr;
-		old_qmode = qmode;
-		++pstr;
-	}
-	*str = dup ? ft_strcpy(*str, dup) : *str;
-	ft_memdel((void **)&dup);
+	new_node = ft_memalloc(sizeof(t_node));
+	ft_memcpy((void *)new_node, (void *)src, sizeof(t_node));
+	place = !*parent ? parent : (*parent)->nodes;	
+	while (*place)
+		++place;
+	*place = new_node;
 }
 
-static int	expand(t_sh_data *shd, t_list *cmd_list)
+void		destroy_tree(t_node *root, int destroy_root)
 {
-	t_token	*tok;
-	int		argc;
+	t_node	**sub_trees;
+
+	if (root->str)
+		ft_memdel((void **)&root->str);
+	sub_trees = root->nodes;
+	while (*sub_trees)
+	{
+		destroy_tree(*sub_trees, 1);
+		++sub_trees;
+	}
+	if (destroy_root)
+		ft_memdel((void **)&root);
+}
+
+int			expect_prod(enum e_prods prod, enum e_tokenid t_id,
+				t_list **token, t_node **parent)
+{
+	t_list	*sub_token;
+	t_node	new_node;
+
+	ft_bzero((void *)&new_node, sizeof(t_node));
+	new_node.id = prod;
+	new_node.t_id = t_id;
+	sub_token = *token;
+	if (g_p_functions[prod](t_id, &sub_token, &new_node))
+	{
+		add_node(&new_node, parent);
+		*token = sub_token;
+		return (1);
+	}
+	destroy_tree(&new_node, 0);
+	return (0);
+}
+
+int			accept_prod(enum e_prods prod, enum e_tokenid t_id,
+				t_list **token, t_node **parent)
+{
+	t_list	*sub_token;
+	t_node	new_node;
+
+	ft_bzero((void *)&new_node, sizeof(t_node));
+	new_node.id = prod;
+	new_node.t_id = t_id;
+	sub_token = *token;
+	if (g_p_functions[prod](t_id, &sub_token, &new_node))
+	{
+		add_node(&new_node, parent);
+		*token = sub_token;
+		return (1);
+	}
+	destroy_tree(&new_node, 0);
+	return (0);
+}
+
+t_node		*sh_parsing(t_sh_data *shd, t_list **tokens)
+{
+	t_node	*root;
+	t_list	*token;
 
 	(void)shd;
-	argc = 0;
-//	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == T_WORD)
-	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == I_WORD) //TEMP
-	{
-		tilde_exp(shd, &tok->str);
-		param_exp(shd, &tok->str);
-		rm_quotes(&tok->str);
-		cmd_list = cmd_list->next;
-		argc = tok->str ? argc + 1 : argc;
-	}
-	return (argc);
-}
-
-char		**sh_parsing(t_sh_data *shd, t_list **cmd_list)
-{
-	t_token	*tok;
-	int		argc;
-	char	**argv;
-
-	argc = expand(shd, *cmd_list);
-	argv = argc ? ft_secmalloc((argc + 1) * sizeof(char *)) : NULL;
-	argc = 0;
-	while (*cmd_list
-//			&& (tok = (t_token *)(*cmd_list)->content)->id == T_WORD)
-			&& (tok = (t_token *)(*cmd_list)->content)->id == I_WORD) //TEMP
-	{
-		if (tok->str)
-			argv[argc++] = tok->str;
-		tok->str = NULL;
-		discard_token(cmd_list);
-	}
-	if (argc)
-		argv[argc] = NULL;
-	while (*cmd_list
-//		&& (tok = (t_token *)(*cmd_list)->content)->id == T_SEPARATOR)
-		&& (tok = (t_token *)(*cmd_list)->content)->type == T_SEPARATOR) //TEMP
-		discard_token(cmd_list);
-	return (argv);
+	root = NULL;
+	token = *tokens;
+	if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &token, &root))
+		ft_printf(SHELL_NAME": parsing error\n");
+	return (root);
 }

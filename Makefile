@@ -67,7 +67,12 @@ LEXINGC			=	sh_lexing.c\
 					token.c\
 					token_utils.c\
 
-PARSINGC		=	param_exp.c\
+PARSINGC		=	p_functions_1.c\
+					p_functions_2.c\
+					p_functions_3.c\
+					p_functions_4.c\
+					p_functions_5.c\
+					param_exp.c\
 					sh_parsing.c\
 					tilde_exp.c\
 
@@ -111,7 +116,7 @@ shb_pwd.o: sh_data.h libft.h t_shvar.h
 shb_setenv.o: t_shvar.h libft.h sh_data.h
 shb_unalias.o: t_shvar.h libft.h sh_data.h
 shb_unsetenv.o: t_shvar.h libft.h sh_data.h
-debug.o: token.h sh_data.h libft.h
+debug.o: sh_parsing.h sh_data.h libft.h token.h c_colors.h
 exec.o: sh_data.h libft.h t_shvar.h sh_signals.h
 sh_execution.o: exec.h sh_data.h libft.h g_builtins.h sh_execution.h
 env.o: t_shvar.h libft.h
@@ -147,10 +152,15 @@ terminal_cursor.o: libft.h sh_input.h sh_data.h t_dllst.h
 sh_lexing.o: token.h sh_data.h libft.h quotes.h t_shvar.h sh_lexing.h
 token.o: token.h sh_data.h libft.h quotes.h t_shvar.h
 token_utils.o: token.h sh_data.h libft.h
-main.o: sh_input.h sh_data.h libft.h t_dllst.h sh_lexing.h sh_parsing.h\
-	sh_execution.h debug.h token.h
+main.o: sh_input.h sh_data.h libft.h t_dllst.h sh_lexing.h sh_execution.h\
+	debug.h sh_parsing.h token.h
+p_functions_1.o: sh_parsing.h sh_data.h libft.h token.h
+p_functions_2.o: sh_parsing.h sh_data.h libft.h token.h
+p_functions_3.o: sh_parsing.h sh_data.h libft.h token.h
+p_functions_4.o: sh_parsing.h sh_data.h libft.h token.h
+p_functions_5.o: sh_parsing.h sh_data.h libft.h token.h
 param_exp.o: sh_data.h libft.h quotes.h t_shvar.h
-sh_parsing.o: token.h sh_data.h libft.h tilde_exp.h param_exp.h quotes.h
+sh_parsing.o: sh_parsing.h sh_data.h libft.h token.h debug.h
 tilde_exp.o: sh_data.h libft.h t_shvar.h
 sh_init.o: sh_data.h libft.h t_shvar.h sh_signals.h terminal_size.h
 %.o: %.c
