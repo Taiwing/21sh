@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 22:31:22 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:14:39 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/15 21:20:09 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static int	expand(t_sh_data *shd, t_list *cmd_list)
 
 	(void)shd;
 	argc = 0;
-	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == T_WORD)
+//	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == T_WORD)
+	while (cmd_list && (tok = (t_token *)cmd_list->content)->id == I_WORD) //TEMP
 	{
 		tilde_exp(shd, &tok->str);
 		param_exp(shd, &tok->str);
@@ -72,7 +73,8 @@ char		**sh_parsing(t_sh_data *shd, t_list **cmd_list)
 	argv = argc ? ft_secmalloc((argc + 1) * sizeof(char *)) : NULL;
 	argc = 0;
 	while (*cmd_list
-			&& (tok = (t_token *)(*cmd_list)->content)->id == T_WORD)
+//			&& (tok = (t_token *)(*cmd_list)->content)->id == T_WORD)
+			&& (tok = (t_token *)(*cmd_list)->content)->id == I_WORD) //TEMP
 	{
 		if (tok->str)
 			argv[argc++] = tok->str;
@@ -82,7 +84,8 @@ char		**sh_parsing(t_sh_data *shd, t_list **cmd_list)
 	if (argc)
 		argv[argc] = NULL;
 	while (*cmd_list
-		&& (tok = (t_token *)(*cmd_list)->content)->id == T_SEPARATOR)
+//		&& (tok = (t_token *)(*cmd_list)->content)->id == T_SEPARATOR)
+		&& (tok = (t_token *)(*cmd_list)->content)->type == T_SEPARATOR) //TEMP
 		discard_token(cmd_list);
 	return (argv);
 }

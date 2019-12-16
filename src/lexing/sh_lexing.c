@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 22:02:54 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:12:15 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/15 21:30:39 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,6 @@ t_list		*sh_lexing(t_sh_data *shd, char **input)
 		++shd->cmd_c;
 	}
 	if (*input)
-	{
-		lst = tokenize(shd, *input, NO_QUOTE, ALIAS_ON);
-		ft_memdel((void **)input);
-	}
+		lst = tokenize(shd, *input, NO_QUOTE);
 	return (lst);
 }

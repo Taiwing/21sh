@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:29:41 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:12:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/15 22:20:13 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,80 +14,67 @@
 #include "quotes.h"
 #include "t_shvar.h"
 
-void	discard_token(t_list **alst)
+static void	delimit_token(t_list **lst, t_token *token)
 {
-	t_list	*next;
-
-	next = (*alst)->next;
-	del_token((*alst)->content, 0);
-	free(ft_heap_collector(*alst, FT_COLLEC_GET));
-	*alst = next;
-}
-
-void	del_token(void *content, size_t size)
-{
-	t_token	*tok;
-
-	(void)size;
-	tok = (t_token *)content;
-	ft_memdel((void **)&(tok->str));
-	ft_memdel((void **)&tok);
-}
-
-void	add_token(t_list **lst, int id, char *str)
-{
-	t_token	tok;
-
-	tok.id = id;
-	tok.str = str;
-	ft_lst_push_back(lst, (void *)&tok, sizeof(t_token));
-}
-
-void	check_alias(t_sh_data *shd, t_list **toks, char *word)
-{
-	t_list	*lst;
-	char	*alias;
-
-	if ((alias = get_shvar_val(word, shd->alias)))
+	if (token->len)
 	{
-		alias = ft_strjoin(alias, " ");
-		lst = tokenize(shd, alias, NO_QUOTE, ALIAS_OFF);
-		if (!*toks)
-			*toks = lst;
+		if (token->type == T_OTHER && is_num_string(token->str, token->len)
+			&& ft_strchr("<>", token->str[token->len]))
+			token->id = I_IO_NUMBER;
+		else if (token->type == T_OTHER)
+			token->id = I_WORD;
 		else
-			ft_lst_last(*toks)->next = lst;
-		ft_memdel((void **)&alias);
-		ft_memdel((void **)&word);
+			token->type = get_token_str_type(token->str,
+				token->len, &token->id, 1);
+		ft_lst_push_back(lst, (void *)token, sizeof(t_token));
 	}
-	else
-		add_token(toks, T_WORD, word);
+	token->id = I_NONE;
+	token->type = T_NONE;
+	token->len = 0;
+	token->str = NULL;
 }
 
-t_list	*tokenize(t_sh_data *shd, char *input, int qmode, int alias)
+static void	add_char(char *c, t_token *token, int *qmode, t_list **lst)
 {
-	int		i;
-	size_t	len;
-	t_list	*lst;
+	enum e_tokentype	new_type;
 
-	i = -1;
-	len = 0;
-	lst = NULL;
-	while (input[++i])
+	new_type = T_NONE;
+	if (!*c)
+		delimit_token(lst, token);
+	else if (token->type == T_OPERATOR && token->type
+		== get_token_str_type(token->str, token->len + 1, NULL, 0))
+		++token->len;
+	else
 	{
-		qmode = get_qmode(qmode, input[i]);
-		if (qmode || !ft_strchr(" \t\n;", input[i]))
-			++len;
-		else if (!qmode && len)
-		{
-			if (alias == ALIAS_ON && (!lst
-				|| ((t_token *)ft_lst_last(lst)->content)->id == T_SEPARATOR))
-				check_alias(shd, &lst, ft_strsub(input + i - len, 0, len));
-			else
-				add_token(&lst, T_WORD, ft_strsub(input + i - len, 0, len));
-			len = 0;
-		}
-		if (!qmode && (input[i] == '\n' || input[i] == ';'))
-			add_token(&lst, T_SEPARATOR, NULL);
+		new_type = get_token_str_type(c, 1, NULL, 0);
+		if (token->type == T_OPERATOR || (!*qmode &&
+			(new_type != T_OTHER || ft_strchr(" \t", *c))))
+			delimit_token(lst, token);
+		else if (token->type == T_OTHER)
+			++token->len;
 	}
+	if (token->type == T_NONE && !ft_strchr(" \t", *c))
+	{
+		token->type = new_type;
+		token->len = 1;
+		token->str = c;
+	}
+	*qmode = get_qmode(*qmode, *c);
+}
+
+t_list		*tokenize(t_sh_data *shd, char *input, int qmode)
+{
+	int			i;
+	t_list		*lst;
+	t_token		token;
+
+	(void)shd;
+	i = -1;
+	lst = NULL;
+	token.len = 0;
+	delimit_token(&lst, &token);
+	while (input[++i])
+		add_char(input + i, &token, &qmode, &lst);
+	add_char(input + i, &token, &qmode, &lst);
 	return (lst);
 }

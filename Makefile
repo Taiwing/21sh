@@ -19,7 +19,8 @@ INPUTDIR		=	input
 LEXINGDIR		=	lexing
 PARSINGDIR		=	parsing
 
-SRCC			=	main.c\
+SRCC			=	debug.c\
+					main.c\
 					sh_init.c\
 
 BUILTINSC		=	g_builtins.c\
@@ -64,6 +65,7 @@ INPUTC			=	char_functions_1.c\
 
 LEXINGC			=	sh_lexing.c\
 					token.c\
+					token_utils.c\
 
 PARSINGC		=	param_exp.c\
 					sh_parsing.c\
@@ -109,6 +111,7 @@ shb_pwd.o: sh_data.h libft.h t_shvar.h
 shb_setenv.o: t_shvar.h libft.h sh_data.h
 shb_unalias.o: t_shvar.h libft.h sh_data.h
 shb_unsetenv.o: t_shvar.h libft.h sh_data.h
+debug.o: token.h sh_data.h libft.h
 exec.o: sh_data.h libft.h t_shvar.h sh_signals.h
 sh_execution.o: exec.h sh_data.h libft.h g_builtins.h sh_execution.h
 env.o: t_shvar.h libft.h
@@ -143,8 +146,9 @@ tab_completion.o: tab_completion.h sh_input.h sh_data.h libft.h t_dllst.h\
 terminal_cursor.o: libft.h sh_input.h sh_data.h t_dllst.h
 sh_lexing.o: token.h sh_data.h libft.h quotes.h t_shvar.h sh_lexing.h
 token.o: token.h sh_data.h libft.h quotes.h t_shvar.h
+token_utils.o: token.h sh_data.h libft.h
 main.o: sh_input.h sh_data.h libft.h t_dllst.h sh_lexing.h sh_parsing.h\
-	sh_execution.h
+	sh_execution.h debug.h token.h
 param_exp.o: sh_data.h libft.h quotes.h t_shvar.h
 sh_parsing.o: token.h sh_data.h libft.h tilde_exp.h param_exp.h quotes.h
 tilde_exp.o: sh_data.h libft.h t_shvar.h

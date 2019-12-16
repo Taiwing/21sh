@@ -3,7 +3,6 @@
    ------------------------------------------------------- */
 
 %token  WORD
-%token  ASSIGNMENT_WORD
 %token  NEWLINE
 %token  IO_NUMBER
 
@@ -16,6 +15,9 @@
 %token  CLOBBER
 /*      '>|'   */
 
+%token  SEMI  LESS  GREAT  PIPE  AND
+/*      ';'   '<'   '>'    '|'   '&'  */
+
 /* -------------------------------------------------------
    The Grammar
    ------------------------------------------------------- */
@@ -27,7 +29,8 @@ complete_command : list separator
                  ;
 list             : and_or list_p
                  ;
-list_p           : ';' list
+list_p           : SEMI list
+                 | AND  list
                  | /* empty */
                  ;
 and_or           : pipeline and_or_p
@@ -38,29 +41,20 @@ and_or_p         : AND_IF linebreak and_or
                  ;
 pipeline         : command pipeline_p
                  ;
-pipeline_p       : '|' linebreak pipeline
+pipeline_p       : PIPE linebreak pipeline
                  | /* empty */
                  ;
-command          : cmd_prefix cmd_word cmd_suffix
-                 | cmd_prefix cmd_word
-                 | cmd_prefix
-                 | cmd_name cmd_suffix
-                 | cmd_name
+command          : cmd_prefix cmd_name cmd_suffix
                  ;
 cmd_name         : WORD                   /* Apply rule 7a */
                  ;
 cmd_word         : WORD                   /* Apply rule 7b */
                  ;
-cmd_prefix       : io_redirect     cmd_prefix_p
-                 | ASSIGNMENT_WORD cmd_prefix_p
-                 ;
-cmd_prefix_p     : cmd_prefix
+cmd_prefix       : io_redirect     cmd_prefix
                  | /* empty */
                  ;
-cmd_suffix       : io_redirect cmd_suffix_p
-                 | WORD        cmd_suffix_p
-                 ;
-cmd_suffix_p     : cmd_suffix
+cmd_suffix       : io_redirect cmd_suffix
+                 | cmd_word    cmd_suffix
                  | /* empty */
                  ;
 io_redirect      :           io_file
@@ -68,9 +62,9 @@ io_redirect      :           io_file
                  |           io_here
                  | IO_NUMBER io_here
                  ;
-io_file          : '<'       filename
+io_file          : LESS      filename
                  | LESSAND   filename
-                 | '>'       filename
+                 | GREAT     filename
                  | GREATAND  filename
                  | DGREAT    filename
                  | LESSGREAT filename
@@ -89,6 +83,7 @@ newline_list     : NEWLINE newline_list
 linebreak        : newline_list
                  | /* empty */
                  ;
-separator        : ';' linebreak
+separator        : SEMI         linebreak
+                 | AND          linebreak
                  | newline_list
                  ;
