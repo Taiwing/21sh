@@ -29,6 +29,8 @@ BUILTINSC		=	g_builtins.c\
 					shb_echo.c\
 					shb_env.c\
 					shb_exit.c\
+					shb_ppt.c\
+					shb_ptok.c\
 					shb_pwd.c\
 					shb_setenv.c\
 					shb_unalias.c\
@@ -101,7 +103,7 @@ vpath			%.c	$(SRCDIR)
 all: $(NAME)
 
 $(NAME): $(SUB1D)/libft.a $(ODIR) $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS) -ltermcap
 
 $(SUB1D)/libft.a:
 	make -C $(SUB1D)
@@ -112,11 +114,14 @@ shb_cd.o: sh_data.h libft.h t_shvar.h
 shb_echo.o: sh_data.h libft.h
 shb_env.o: t_shvar.h libft.h sh_execution.h sh_data.h
 shb_exit.o: sh_data.h libft.h t_shvar.h
+shb_ppt.o: sh_input.h sh_data.h libft.h t_dllst.h sh_lexing.h sh_parsing.h\
+	token.h c_colors.h debug.h
+shb_ptok.o: sh_lexing.h sh_data.h libft.h debug.h sh_parsing.h token.h
 shb_pwd.o: sh_data.h libft.h t_shvar.h
 shb_setenv.o: t_shvar.h libft.h sh_data.h
 shb_unalias.o: t_shvar.h libft.h sh_data.h
 shb_unsetenv.o: t_shvar.h libft.h sh_data.h
-debug.o: sh_parsing.h sh_data.h libft.h token.h c_colors.h
+debug.o: sh_parsing.h sh_data.h libft.h token.h
 exec.o: sh_data.h libft.h t_shvar.h sh_signals.h
 sh_execution.o: exec.h sh_data.h libft.h g_builtins.h sh_execution.h
 env.o: t_shvar.h libft.h
@@ -153,7 +158,7 @@ sh_lexing.o: token.h sh_data.h libft.h quotes.h t_shvar.h sh_lexing.h
 token.o: token.h sh_data.h libft.h quotes.h t_shvar.h
 token_utils.o: token.h sh_data.h libft.h
 main.o: sh_input.h sh_data.h libft.h t_dllst.h sh_lexing.h sh_execution.h\
-	debug.h sh_parsing.h token.h
+	token.h debug.h sh_parsing.h
 p_functions_1.o: sh_parsing.h sh_data.h libft.h token.h
 p_functions_2.o: sh_parsing.h sh_data.h libft.h token.h
 p_functions_3.o: sh_parsing.h sh_data.h libft.h token.h

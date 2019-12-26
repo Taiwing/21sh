@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 14:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 20:57:19 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/20 18:16:08 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "sh_data.h"
 
-# define BUILTIN_COUNT	9
+# define BUILTIN_COUNT	11
 
 typedef	int				(*t_builtin)(char **argv, t_sh_data *shd);
 
@@ -36,5 +36,7 @@ int						shb_pwd(char **argv, t_sh_data *shd);
 int						shb_setenv(char **argv, t_sh_data *shd);
 int						shb_unalias(char **argv, t_sh_data *shd);
 int						shb_unsetenv(char **argv, t_sh_data *shd);
+int						shb_ptok(char **argv, t_sh_data *shd);
+int						shb_ppt(char **argv, t_sh_data *shd);
 
 #endif

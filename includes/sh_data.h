@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/11 20:54:29 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:18:25 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/20 19:04:08 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ typedef struct		s_sh_data
 	t_sh_history	hist;
 	size_t			cmd_c;
 	int				term_width;
+	int				ppt;
+	char			*cm_cap;
 }					t_sh_data;
 
 void				reset_input_mode(void);

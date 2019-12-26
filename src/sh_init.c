@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 10:30:45 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:18:55 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/26 19:15:46 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,20 @@
 #include "t_shvar.h"
 #include "sh_signals.h"
 #include "terminal_size.h"
+#include <termcap.h>
+
+static void	init_ppt(t_sh_data *shd)
+{
+	char	*term_name;
+
+	shd->cm_cap = NULL;
+	if ((term_name = get_shvar_val("TERM", shd->env))
+		&& tgetent(NULL, term_name) > 0
+		&& (shd->cm_cap = tgetstr("cm", NULL)))
+		shd->ppt = 1;
+	else
+		shd->ppt = 0;
+}
 
 void		set_custom_input_mode(void)
 {
@@ -85,4 +99,5 @@ void		sh_init(t_sh_data *shd, char **env)
 	shd->cmd_c = 0;
 	shd->term_width = get_terminal_width();
 	term_width_container(&shd->term_width);
+	init_ppt(shd);
 }

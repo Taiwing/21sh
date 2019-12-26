@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/15 18:18:59 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 01:23:35 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/26 19:05:36 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,12 @@ char * const	g_token_str[TOKEN_COUNT + 1] = {
 	NULL,
 	NULL
 };
+
+void		destroy_token_list(t_list **alst)
+{
+	while (*alst)
+		discard_token(alst);
+}
 
 void		discard_token(t_list **alst)
 {

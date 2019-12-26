@@ -6,12 +6,11 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/16 01:27:45 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 22:14:13 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/26 19:16:43 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh_parsing.h"
-#include "c_colors.h"
 
 char * const	g_token_id_str[TOKEN_COUNT + 2] = {
 	"I_NEWLINE",
@@ -43,25 +42,6 @@ char * const	g_token_type_str[5] = {
 	NULL
 };
 
-void			show_token(t_token *token)
-{
-	char	*new_line;
-
-	ft_printf("[ type = %s, id = %s, ", g_token_type_str[token->type],
-		g_token_id_str[token->id]);
-	if (!(new_line = ft_strchr(token->str, '\n'))
-		|| (int)(new_line - token->str) >= token->len)
-		ft_printf("len = %d, str = %.*s ]\n", token->len,
-			token->len, token->str);
-	else
-	{
-		ft_printf("len = %d, str = ", token->len);
-		ft_printf("%.*s{\\n}", (int)(new_line - token->str), token->str);
-		ft_printf("%.*s ]\n", token->len - (int)(new_line - token->str),
-			new_line + 1);
-	}
-}
-
 char * const g_prod_str[PRODS_COUNT] = {
 	"P_COMPLETE_COMMAND",
 	"P_LIST",
@@ -85,25 +65,3 @@ char * const g_prod_str[PRODS_COUNT] = {
 	"P_SEPARATOR",
 	"P_TERM"
 };
-
-void	show_parse_tree(t_node *parse_tree)
-{
-	t_node	**ptr;
-
-	if (!parse_tree)
-		return ;
-	ft_printf("[ prod = %s, t_id = %s, str = %s ]",
-		g_prod_str[parse_tree->id], g_token_id_str[parse_tree->t_id],
-		parse_tree->str);
-	ptr = parse_tree->nodes;
-	ft_putstr(*ptr ? " -> " : "\n");
-	while (*ptr)
-	{
-		ft_printf(C_GREEN"%s"C_RESET"%s", g_prod_str[(*ptr)->id],
-			ptr[1] ? ", " : "\n");
-		++ptr;
-	}
-	ptr = parse_tree->nodes;
-	while (*ptr)
-		show_parse_tree(*ptr++);
-}

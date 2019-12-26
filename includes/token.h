@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:33:22 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 01:13:44 by yforeau          ###   ########.fr       */
+/*   Updated: 2019/12/26 19:06:24 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct			s_token
 	char				*str;
 }						t_token;
 
+void					destroy_token_list(t_list **alst);
 void					discard_token(t_list **alst);
 void					del_token(void *content, size_t size);
 int						is_num_string(char *str, int len);
