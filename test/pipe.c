@@ -66,7 +66,6 @@ static int	exec_cmd(char **argv, char **env, int in, int out)
 	}
 	else if (wait(&ret) == -1)
 	{
-		close(in);
 		perror("wait");
 		return (1);
 	}
@@ -169,6 +168,7 @@ static void	exec_pipeline(char ***cmd, char **env)
 		}
 		printf("command %d:\n", i + 1);
 		exec_cmd(cmd[i], env, in, fd[1]);
+		close(in);
 		close(fd[1]);
 		in = fd[0];
 		ft_wtfree(cmd[i]);
