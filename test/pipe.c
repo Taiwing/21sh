@@ -29,10 +29,38 @@ static void	find_cmd_name(char *argv_0, char cmd_name[256])
 		bzero(cmd_name, 256);
 }
 
-static int	exec_cmd(char **argv, char **env, int in, int out)
+static int	exec_command(char cmd_name[256], char **argv, char **env, int fd[2])
+{
+	int	in;
+	int	out;
+
+	in = fd[0];
+	out = fd[1];
+	find_cmd_name(argv[0], cmd_name);
+	if (!cmd_name[0])
+		fprintf(stderr, "error: '%s' not found\n", argv[0]);
+	if (in != 0)
+	{
+		if (dup2(in, 0) == -1)
+			perror("dup2");
+		close(in);
+	}
+	if (out != 1)
+	{
+		if (dup2(out, 1) == -1)
+			perror("dup2");
+		close(out);
+	}
+	if (execve(cmd_name, argv, env) == -1)
+		perror("execve");
+	return (1);
+}
+
+static int	spawn_process(char **argv, char **env, int in, int out)
 {
 	pid_t	cp;
 	int		ret;
+	int		fd[2];
 	char	**ptr;
 	char	cmd_name[256];
 
@@ -41,6 +69,8 @@ static int	exec_cmd(char **argv, char **env, int in, int out)
 	printf("trying to exec '");
 	ptr = argv;	
 	bzero(cmd_name, 256);
+	fd[0] = in;
+	fd[1] = out;
 	while (*ptr)
 	{
 		printf("%s%s", *ptr, *(ptr + 1) ? " " : "'\n");
@@ -52,18 +82,7 @@ static int	exec_cmd(char **argv, char **env, int in, int out)
 		return (1);
 	}
 	else if (!cp)
-	{
-		find_cmd_name(argv[0], cmd_name);
-		if (!cmd_name[0])
-			fprintf(stderr, "error: '%s' not found\n", argv[0]);
-		if (dup2(in, 0) == -1)
-			perror("dup2");
-		if (dup2(out, 1) == -1)
-			perror("dup2");
-		if (execve(cmd_name, argv, env) == -1)
-			perror("execve");
-		return (1);
-	}
+		return (exec_command(cmd_name, argv, env, fd));
 	else if (wait(&ret) == -1)
 	{
 		perror("wait");
@@ -167,8 +186,8 @@ static void	exec_pipeline(char ***cmd, char **env)
 			continue ;
 		}
 		printf("command %d:\n", i + 1);
-		exec_cmd(cmd[i], env, in, fd[1]);
-		if (in)
+		spawn_process(cmd[i], env, in, fd[1]);
+		if (in != 0)
 			close(in);
 		if (fd[1] != 1)
 			close(fd[1]);
