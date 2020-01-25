@@ -29,7 +29,7 @@ static void	find_cmd_name(char *argv_0, char cmd_name[256])
 		bzero(cmd_name, 256);
 }
 
-static int	exec_cmd(char **argv, char **env)
+static int	exec_cmd(char **argv, char **env, int in, int out)
 {
 	pid_t	cp;
 	int		ret;
@@ -56,12 +56,17 @@ static int	exec_cmd(char **argv, char **env)
 		find_cmd_name(argv[0], cmd_name);
 		if (!cmd_name[0])
 			fprintf(stderr, "error: '%s' not found\n", argv[0]);
+		if (dup2(in, 0) == -1)
+			perror("dup2");
+		if (dup2(out, 1) == -1)
+			perror("dup2");
 		if (execve(cmd_name, argv, env) == -1)
 			perror("execve");
 		return (1);
 	}
 	else if (wait(&ret) == -1)
 	{
+		close(in);
 		perror("wait");
 		return (1);
 	}
@@ -145,35 +150,27 @@ static void	ft_print_words_tables(char **tab)
 		printf("%s\n", *tab++);
 }
 
-static void	swap_p(uintptr_t *p1, uintptr_t *p2)
-{
-	if (p1 != p2)
-	{
-		*p1 ^= *p2;
-		*p2 ^= *p1;
-		*p1 ^= *p2;
-	}
-}
-
 static void	exec_pipeline(char ***cmd, char **env)
 {
 	int		i;
-	int		tube[4] = {-1, -1, -1, -1};
-	int		*in = tube + 2, *out = tube;
+	int		in;
+	int		fd[2];
 
 	i = -1;
+	in = 0;
+	fd[0] = 0;
 	while (cmd[++i])
 	{
-		swap_p((uintptr_t *)&in, (uintptr_t *)&out);
-		out[0] = -1;
-		out[1] = -1;
-		if (cmd[i+1] && pipe(out) != 0)
+		fd[1] = 1;
+		if (cmd[i+1] && pipe(fd) != 0)
 		{
 			perror("pipe");
 			continue ;
 		}
 		printf("command %d:\n", i + 1);
-		exec_cmd(cmd[i], env);
+		exec_cmd(cmd[i], env, in, fd[1]);
+		close(fd[1]);
+		in = fd[0];
 		ft_wtfree(cmd[i]);
 	}
 	free(cmd);
