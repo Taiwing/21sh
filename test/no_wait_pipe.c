@@ -56,11 +56,10 @@ static int	exec_command(char cmd_name[256], char **argv, char **env, int fd[2])
 	return (1);
 }
 
-static int	spawn_process(char **argv, char **env, int in, int out)
+static int	spawn_process(char **argv, char **env, int in_out[2], int last)
 {
 	pid_t	cp;
 	int		ret;
-	int		fd[2];
 	char	**ptr;
 	char	cmd_name[256];
 
@@ -69,8 +68,6 @@ static int	spawn_process(char **argv, char **env, int in, int out)
 	printf("trying to exec '");
 	ptr = argv;	
 	bzero(cmd_name, 256);
-	fd[0] = in;
-	fd[1] = out;
 	while (*ptr)
 	{
 		printf("%s%s", *ptr, *(ptr + 1) ? " " : "'\n");
@@ -82,7 +79,12 @@ static int	spawn_process(char **argv, char **env, int in, int out)
 		return (1);
 	}
 	else if (!cp)
-		return (exec_command(cmd_name, argv, env, fd));
+		return (exec_command(cmd_name, argv, env, in_out));
+	else if (last && wait(&ret) == -1)
+	{
+		perror("wait");
+		return (1);
+	}
 	return (0);
 }
 
@@ -166,27 +168,28 @@ static void	ft_print_words_tables(char **tab)
 static void	exec_pipeline(char ***cmd, char **env)
 {
 	int		i;
-	int		in;
-	int		fd[2];
+	int		last;
+	int		in_out[2];
+	int		pipe_fd[2];
 
 	i = -1;
-	in = 0;
-	fd[0] = 0;
+	in_out[0] = 0;
 	while (cmd[++i])
 	{
-		fd[1] = 1;
-		if (cmd[i+1] && pipe(fd) != 0)
+		pipe_fd[1] = 1;
+		if (!(last = !cmd[i+1]) && pipe(pipe_fd) != 0)
 		{
 			perror("pipe");
 			continue ;
 		}
+		in_out[1] = pipe_fd[1];
 		printf("command %d:\n", i + 1);
-		spawn_process(cmd[i], env, in, fd[1]);
-		if (in != 0)
-			close(in);
-		if (fd[1] != 1)
-			close(fd[1]);
-		in = fd[0];
+		spawn_process(cmd[i], env, in_out, last);
+		if (in_out[0] != 0)
+			close(in_out[0]);
+		if (in_out[1] != 1)
+			close(in_out[1]);
+		in_out[0] = pipe_fd[0];
 		ft_wtfree(cmd[i]);
 	}
 	free(cmd);
