@@ -107,15 +107,15 @@ int			accept_prod(enum e_prods prod, enum e_tokenid t_id,
 	return (0);
 }
 
-t_node		*sh_parsing(t_sh_data *shd, t_list **tokens)
+t_cmd_list		*sh_parsing(t_sh_data *shd, t_list **tokens)
 {
-	t_node	*root;
-	t_list	*token;
+	t_node		*root;
+	t_list		*token;
 
 	(void)shd;
 	root = NULL;
 	token = *tokens;
 	if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &token, &root))
 		ft_printf(SHELL_NAME": parsing error\n");
-	return (root);
+	return (root ? build_exec_tree(shd, root) : NULL);
 }

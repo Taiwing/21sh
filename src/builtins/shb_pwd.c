@@ -12,7 +12,11 @@
 
 #include "sh_data.h"
 #include "t_shvar.h"
-#include <sys/syslimits.h>
+#ifdef __APPLE__
+# include <sys/syslimits.h>
+#elif __linux
+# include <linux/limits.h>
+#endif
 
 int	shb_pwd(char **argv, t_sh_data *shd)
 {

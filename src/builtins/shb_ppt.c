@@ -103,7 +103,9 @@ int	shb_ppt(char **argv, t_sh_data *shd)
 	input = ft_strdup(argv[1]);
 	if ((tokens = sh_lexing(shd, &input)))
 	{
-		if ((parse_tree = sh_parsing(shd, &tokens)))
+		if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &tokens, &parse_tree))
+			ft_printf(SHELL_NAME": parsing error\n");
+		else
 		{
 			show_parse_tree(shd, parse_tree, 0);
 			destroy_tree(parse_tree, 1);

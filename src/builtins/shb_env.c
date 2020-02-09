@@ -89,8 +89,8 @@ static void		exec_with_tmp_env(char **argv, t_sh_data *shd, int empty_env)
 		path_backup = shd->path;
 		shd->path = ft_strsplit(get_shvar_val("PATH", shd->env), ':');
 	}
-	if (*argv)
-		sh_execution(shd, &argv, CMD_KEEP);
+//	if (*argv)
+//		sh_execution(shd, &argv, CMD_KEEP);
 	reset_env(shd, env_backup, empty_env);
 	if (path_backup || (!get_shvar_val("PATH", shd->env) && shd->path))
 	{
@@ -117,6 +117,7 @@ int				shb_env(char **argv, t_sh_data *shd)
 	}
 	else
 	{
+		return (0); //TODO: remove this when exec_with_tmp_env is fixed
 		init_getopt(&od, "i", 0, 0);
 		while (ft_getopt(argc, argv, &od) != -1)
 			empty_env = 1;

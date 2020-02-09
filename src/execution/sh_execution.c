@@ -10,44 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
-#include "g_builtins.h"
 #include "sh_execution.h"
 
-static int	builtin_match(char *name)
+static int	exec_and_or(t_sh_data *shd, t_and_or *and_or)
 {
-	int	i;
+	int	ret;
 
-	i = -1;
-	while (++i < BUILTIN_COUNT)
+	while (and_or)
 	{
-		if (!ft_strcmp(name, g_builtins[i].name))
-			return (i);
-	}
-	return (-1);
+		ret = exec_command(shd, and_or->cur);
+		if ((and_or->type == AO_TYPE_AND && ret)
+			|| (and_or->type == AO_TYPE_OR && !ret)
+			|| and_or->type == AO_TYPE_NONE)
+			break ;
+		and_or = and_or->next;
+	}	
+	return (ret);
 }
 
-void		sh_execution(t_sh_data *shd, char ***cmd, int free_cmd)
+void		sh_execution(t_sh_data *shd, t_cmd_list *cmd_list)
 {
-	char	**argv;
-	int		buid;
-
-	argv = *cmd;
-	if (ft_strchr(argv[0], '/'))
+	while (cmd_list)
 	{
-		shd->cmd_exit = 1;
-		exec_local_file(shd, argv);
-	}
-	else if ((buid = builtin_match(argv[0])) >= 0)
-		shd->cmd_exit = g_builtins[buid].bi(argv, shd);
-	else
-	{
-		shd->cmd_exit = 1;
-		exec_on_path(shd, argv);
-	}
-	if (free_cmd == CMD_FREE)
-	{
-		ft_wtfree(argv);
-		*cmd = NULL;
+		shd->cmd_exit = exec_and_or(shd, cmd_list->cur);
+		cmd_list = cmd_list->next;
 	}
 }

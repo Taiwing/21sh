@@ -13,10 +13,9 @@
 #ifndef SH_EXECUTION_H
 # define SH_EXECUTION_H
 
-# include "sh_data.h"
+# include "sh_parsing.h"
 
-enum	e_cmdfree {CMD_FREE, CMD_KEEP};
-
-void	sh_execution(t_sh_data *shd, char ***cmd, int free_cmd);
+int	exec_command(t_sh_data *shd, t_command *command);
+void	sh_execution(t_sh_data *shd, t_cmd_list *exec_tree);
 
 #endif
