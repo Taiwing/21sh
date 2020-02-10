@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 18:12:20 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/26 19:22:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/10 18:01:32 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,13 @@ int	shb_ppt(char **argv, t_sh_data *shd)
 	t_list	*tokens;
 	t_node	*parse_tree;
 
-	if (ft_wtlen(argv) != 2)
+	if (!shd->ppt || ft_wtlen(argv) != 2)
 	{
-		ft_putstr_fd("ppt: wrong number of arguments\n", 2);
+		ft_putstr_fd(shd->ppt ? "ppt: wrong number of arguments\n"
+			: SHELL_NAME": the 'ppt' builtin is disabled\n", 2);
 		return (1);
 	}
+	parse_tree = NULL;
 	input = ft_strdup(argv[1]);
 	if ((tokens = sh_lexing(shd, &input)))
 	{
