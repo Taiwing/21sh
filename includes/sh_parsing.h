@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 22:32:04 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 22:44:43 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/10 20:09:20 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@ enum e_and_or_type		{AO_TYPE_NONE, AO_TYPE_AND, AO_TYPE_OR};
 
 typedef struct			s_and_or
 {
-	t_command		*cur;
-	struct s_and_or		*next;
+	struct s_and_or		*left;
+	t_command			*right;
 	enum e_and_or_type	type;
 }				t_and_or;
 
@@ -154,6 +154,7 @@ typedef struct			s_cmd_list
 
 char				*expand(t_sh_data *shd, char *str);
 void				destroy_command(t_command *command);
+void				destroy_and_or(t_and_or *and_or);
 void				destroy_exec_tree(t_cmd_list *cmd_list);
 int				find_command(t_sh_data *shd, t_command *cmd,
 					char *cmd_name);

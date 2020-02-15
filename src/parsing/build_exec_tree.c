@@ -31,23 +31,27 @@ static t_command	*build_pipeline_command(t_sh_data *shd,
 	return (command);
 }
 
-static t_and_or		*build_and_or(t_sh_data *shd, t_node *and_or_node)
+static t_and_or		*build_and_or(t_sh_data *shd, t_node *and_or_node,
+				enum e_and_or_type type, t_and_or *left)
 {
-	t_command	*cur;
+	t_command	*right;
 	t_and_or	*and_or;
 
-	if (!(cur = build_pipeline_command(shd, and_or_node->nodes[0])))
-		return (NULL);
-	and_or = ft_memalloc(sizeof(t_and_or));
-	and_or->cur = cur;
-	and_or->type = AO_TYPE_NONE;
-	if (and_or_node->nodes[1] && (and_or->next = build_and_or(shd,
-		fetch_prod(and_or_node->nodes[1], P_AND_OR))))
+	if (!(right = build_pipeline_command(shd, and_or_node->nodes[0])))
 	{
-		if (and_or_node->nodes[1]->nodes[0]->t_id == I_AND_IF)
-			and_or->type = AO_TYPE_AND;
-		else
-			and_or->type = AO_TYPE_OR;
+		destroy_and_or(left);
+		return (NULL);
+	}
+	and_or = ft_memalloc(sizeof(t_and_or));
+	and_or->left = left;
+	and_or->right = right;
+	and_or->type = type;
+	if (and_or_node->nodes[1])
+	{
+		type = and_or_node->nodes[1]->nodes[0]->t_id == I_AND_IF
+			? AO_TYPE_AND : AO_TYPE_OR;
+		return (build_and_or(shd, fetch_prod(and_or_node->nodes[1], P_AND_OR),
+			type, and_or));
 	}
 	return (and_or);
 }
@@ -61,7 +65,7 @@ static t_cmd_list	*build_cmd_list(t_sh_data *shd, t_node *list_node)
 	cur = NULL;
 	next = NULL;
 	cmd_list = NULL;
-	if ((cur = build_and_or(shd, list_node->nodes[0])))
+	if ((cur = build_and_or(shd, list_node->nodes[0], AO_TYPE_NONE, NULL)))
 		cmd_list = ft_memalloc(sizeof(t_cmd_list));
 	if (list_node->nodes[1])
 		next = build_cmd_list(shd, list_node->nodes[1]->nodes[1]);

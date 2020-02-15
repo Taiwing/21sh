@@ -16,9 +16,9 @@ void	destroy_and_or(t_and_or *and_or)
 {
 	if (!and_or)
 		return ;
-	if (and_or->next)
-		destroy_and_or(and_or->next);
-	destroy_command(and_or->cur);
+	if (and_or->left)
+		destroy_and_or(and_or->left);
+	destroy_command(and_or->right);
 	ft_memdel((void **)&and_or);
 }
 
