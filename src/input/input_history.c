@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 07:54:37 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:10:27 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 13:42:25 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,9 @@ void		save_current_line(t_input_data *idat, t_sh_history *hist)
 
 	if (!idat->hi)
 		idat->buf = dllst_to_str(dllst_first(idat->lst));
-	else
+	else if ((raw = dllst_to_str(dllst_first(idat->lst))))
 	{
 		ft_memdel((void **)&hist->cmd[hist->size - idat->hi]);
-		raw = dllst_to_str(dllst_first(idat->lst));
 		hist->cmd[hist->size - idat->hi] = ft_stradd(&raw, "\n", 1);
 	}
 }
