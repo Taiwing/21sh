@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:29:41 by yforeau           #+#    #+#             */
-/*   Updated: 2020/02/15 17:46:22 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 14:10:03 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ static void	add_char(char *c, t_token *token, int *qmode, t_list **lst)
 	else
 	{
 		new_type = get_token_str_type(c, 1, NULL, 0);
-		if (token->type == T_OPERATOR || (!*qmode &&
-			(new_type != T_OTHER || ft_strchr(" \t", *c))))
+		if (!*qmode && (token->type != new_type || new_type == T_SEPARATOR
+				|| ft_strchr(" \t", *c)))
 			delimit_token(lst, token);
 		else if (token->type == T_OTHER)
 			++token->len;
