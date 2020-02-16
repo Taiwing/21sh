@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/16 18:13:17 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 22:40:51 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 10:03:39 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	p_linebreak(enum e_tokenid t_id, t_list **token, t_node *node)
 	return (expect_prod(P_NEWLINE_LIST, I_NONE, token, &node));
 }
 
+//TODO: why the fuck am I testing two timew for the I_SEMI term token ?
+//The second one should be replaced with a I_AND token duuuuuh
 int	p_separator(enum e_tokenid t_id, t_list **token, t_node *node)
 {
 	(void)t_id;

@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 22:32:04 by yforeau           #+#    #+#             */
-/*   Updated: 2020/02/10 20:09:20 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 10:10:00 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,6 @@ int				find_command(t_sh_data *shd, t_command *cmd,
 t_node				*fetch_prod(t_node *parent, enum e_prods prod);
 t_command			*build_command(t_sh_data *shd, t_node *command_node);
 t_cmd_list			*build_exec_tree(t_sh_data *shd, t_node *root);
-t_cmd_list			*sh_parsing(t_sh_data *shd, t_list **tokens);
+t_cmd_list			*sh_parsing(t_sh_data *shd, t_list *tokens);
 
 #endif

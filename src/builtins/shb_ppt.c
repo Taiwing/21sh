@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 18:12:20 by yforeau           #+#    #+#             */
-/*   Updated: 2020/02/10 18:01:32 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 10:59:09 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,23 +89,26 @@ void		show_parse_tree(t_sh_data *shd, t_node *node, int lvl)
 		tputs(tgoto(shd->cm_cap, 0, max_lvl * 2 + 1), 1, loc_putchar);
 }
 
+//TODO: the way the errors are handled is a bit dumb
+//build a builtin structure that will include error strings and error codes,
+//doc, usage, also options (t_optdata or at least optstring should be there)
 int	shb_ppt(char **argv, t_sh_data *shd)
 {
 	char	*input;
+	t_list	*ptr;
 	t_list	*tokens;
 	t_node	*parse_tree;
 
-	if (!shd->ppt || ft_wtlen(argv) != 2)
-	{
-		ft_putstr_fd(shd->ppt ? "ppt: wrong number of arguments\n"
-			: SHELL_NAME": the 'ppt' builtin is disabled\n", 2);
-		return (1);
-	}
+	if (!shd->ppt)
+		return (ft_dprintf(2, "ppt: wrong number of arguments\n"));
+	else if (ft_wtlen(argv) != 2)
+		return (ft_dprintf(2, SHELL_NAME": the 'ppt' builtin is disabled\n"));
 	parse_tree = NULL;
 	input = ft_strdup(argv[1]);
 	if ((tokens = sh_lexing(shd, &input)))
 	{
-		if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &tokens, &parse_tree))
+		ptr = tokens;
+		if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &ptr, &parse_tree))
 			ft_printf(SHELL_NAME": parsing error\n");
 		else
 		{

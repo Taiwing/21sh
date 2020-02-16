@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/16 10:28:46 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/16 22:45:23 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 11:00:34 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,15 +107,27 @@ int			accept_prod(enum e_prods prod, enum e_tokenid t_id,
 	return (0);
 }
 
-t_cmd_list		*sh_parsing(t_sh_data *shd, t_list **tokens)
+//TODO: The accept_prod P_SEPARATOR is a technical debt, it should be
+//removed along with the token test before expect_prod P_COMPLETE_COMMAND
+//and be replaced by a new parse tree prod like P_PROGRAM which could be a
+//simple separator without problem. For now this will make an empty or a ';'
+//command work without the parsing complaining (there could also be a ';'
+//token before a complete command without problem).
+//This also means that the ppt builting is technically false since it doesnt
+//accept the P_SEPARATOR before expecting the command.
+//Fix this later.
+t_cmd_list		*sh_parsing(t_sh_data *shd, t_list *tokens)
 {
 	t_node		*root;
-	t_list		*token;
 
 	(void)shd;
 	root = NULL;
-	token = *tokens;
-	if (!expect_prod(P_COMPLETE_COMMAND, I_NONE, &token, &root))
+	if (accept_prod(P_SEPARATOR, I_NONE, &tokens, &root))
+	{
+		destroy_tree(root, 1);
+		root = NULL;
+	}
+	if (tokens && !expect_prod(P_COMPLETE_COMMAND, I_NONE, &tokens, &root))
 		ft_printf(SHELL_NAME": parsing error\n");
 	return (root ? build_exec_tree(shd, root) : NULL);
 }

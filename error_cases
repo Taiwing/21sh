@@ -1,0 +1,3 @@
+ls;cat grammar
+#21sh does not correctly tokenize cat because it is glued to a ';' separator
+#but it works with a '&'sep... tiens tiens tiens
