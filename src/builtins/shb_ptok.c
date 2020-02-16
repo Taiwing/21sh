@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 18:14:48 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/20 18:39:01 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 14:17:12 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int		shb_ptok(char **argv, t_sh_data *shd)
 		return (1);
 	}
 	input = ft_strdup(argv[1]);
-	if ((tokens = sh_lexing(shd, &input)))
+	if ((tokens = sh_lexing(shd, &input, HISTORY_OFF)))
 	{
 		while (tokens)
 		{

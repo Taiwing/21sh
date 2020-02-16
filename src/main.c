@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 21:58:02 by yforeau           #+#    #+#             */
-/*   Updated: 2020/02/16 10:10:15 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/16 14:17:46 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		main(int argc, char **argv, char **env)
 			input = sh_input(&shd, 0, 0);
 		if (input)
 		{
-			if ((tokens = sh_lexing(&shd, &input)))
+			if ((tokens = sh_lexing(&shd, &input, HISTORY_ON)))
 			{
 				if ((exec_tree = sh_parsing(&shd, tokens)))
 				{
