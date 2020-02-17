@@ -6,7 +6,7 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 01:33:16 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:08:13 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/17 08:50:24 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "libft.h"
 #include "terminal_size.h"
 #include "terminal_cursor.h"
+#include "sh_data.h"
 
 pid_t	stat_pid(pid_t in)
 {
@@ -45,6 +46,8 @@ void	signal_hand(int sig)
 		if ((pos = curs_pos_container(NULL)))
 			get_curs_pos(pos);
 	}
+	else if (sig == SIGCONT)
+		set_custom_input_mode();
 }
 
 void	init_signals(void)

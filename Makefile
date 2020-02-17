@@ -133,7 +133,7 @@ sh_execution.o: sh_execution.h sh_parsing.h sh_data.h libft.h token.h
 env.o: t_shvar.h libft.h
 history.o: sh_data.h libft.h
 quotes.o: quotes.h libft.h
-sh_signals.o: libft.h terminal_size.h terminal_cursor.h
+sh_signals.o: libft.h terminal_size.h terminal_cursor.h sh_data.h
 t_shvar_list.o: t_shvar.h libft.h
 t_shvar_utils.o: t_shvar.h libft.h
 char_functions_1.o: charfunc.h sh_input.h sh_data.h libft.h t_dllst.h quotes.h\

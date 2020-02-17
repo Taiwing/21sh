@@ -6,10 +6,11 @@
 /*   By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 15:42:19 by yforeau           #+#    #+#             */
-/*   Updated: 2019/12/11 21:10:53 by yforeau          ###   ########.fr       */
+/*   Updated: 2020/02/17 08:57:28 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <errno.h>
 #include "charfunc.h"
 #include "quotes.h"
 #include "t_shvar.h"
@@ -75,8 +76,10 @@ static int	sh_getchar(char c[8])
 	int	i;
 	int	rd;
 
-	if ((rd = read(0, c, 8)) == -1)
+	if ((rd = read(0, c, 8)) == -1 && errno != EINTR)
 		ft_exit("read_error", EXIT_FAILURE);
+	else if (rd == -1)
+		return ('\003');
 	if (rd == 1 && (c[0] > 31 || ft_strchr(INPUT_CONTROL_CHARS, c[0])))
 		return (c[0]);
 	else if (rd > 1)
